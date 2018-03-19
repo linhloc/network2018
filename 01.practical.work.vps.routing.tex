@@ -1,0 +1,98 @@
+\documentclass[11pt, oneside]{report}   	
+%\usepackage{geometry}                		
+  		
+\usepackage{graphicx}		
+\usepackage{amssymb}
+\usepackage{listings}
+%SetFonts
+
+\title{Report of vps routing}
+\author{Loc Thi Thuy Linh}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+\section*{1. Connect to VPS with ssh}
+
+\begin{itemize}
+ \item \textbf{Command:} ssh -p 22222 linhup@ictlab.usth.edu.vn
+ \item \textbf{Response:} 
+ \begin{lstlisting}
+ The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Mon Mar 19 21:33:03 2018 from 192.168.0.200
+\end{lstlisting}
+\end{itemize}
+
+\section*{2. Install traceroute tool}
+\begin{itemize}
+\item \textbf{Command:} sudo apt-get install traceroute
+\end{itemize}
+
+\section*{3. Check if usth.edu.vn is up or not with ping (5 times only)}
+\begin{itemize} 
+\item \textbf{Command:} ping -c 5 usth.edu.vn
+\item \textbf{Response:}
+\begin{lstlisting}
+PING usth.edu.vn (104.27.160.15) 56(84) bytes of data.
+64 bytes from 104.27.160.15: icmp_seq=1 ttl=54 time=25.6 ms
+64 bytes from 104.27.160.15: icmp_seq=2 ttl=54 time=25.5 ms
+64 bytes from 104.27.160.15: icmp_seq=3 ttl=54 time=25.4 ms
+64 bytes from 104.27.160.15: icmp_seq=4 ttl=54 time=25.4 ms
+64 bytes from 104.27.160.15: icmp_seq=5 ttl=54 time=25.5 ms
+
+--- usth.edu.vn ping statistics ---
+5 packets transmitted, 5 received, 0\% packet loss, time 4005ms
+rtt min/avg/max/mdev = 25.470/25.550/25.678/0.126 ms
+\end{lstlisting}
+\end{itemize}
+
+\section*{4. Use traceroute tool to find the route from your VPS to usth.edu.vn}
+\begin{itemize}
+\item \textbf{Command:} traceroute usth.edu.vn
+\item \textbf{Response:}
+\begin{lstlisting}
+traceroute to usth.edu.vn (104.27.161.15), 30 hops max, 60 byte packets
+ 1  192.168.0.1 (192.168.0.1)  0.911 ms  0.904 ms  0.893 ms
+ 2  ci96.120-46.netnam.vn (101.96.120.46)  2.127 ms  2.133 ms  2.122 ms
+ 3  static.netnam.vn (119.17.219.78)  2.528 ms static.netnam.vn (119.17.219.74)  2.507 ms static.netnam.vn (119.17.219.78)  2.505 ms
+ 4  static.netnam.vn (119.17.219.13)  2.457 ms  2.468 ms static.netnam.vn (119.17.219.17)  2.605 ms
+ 5  203.113.156.25 (203.113.156.25)  2.784 ms static.netnam.vn (119.17.219.10)  2.746 ms 203.113.156.25 (203.113.156.25)  2.759 ms
+ 6  static.netnam.vn (119.17.219.21)  2.524 ms localhost (27.68.229.49)  39.134 ms static.netnam.vn (119.17.219.21)  1.384 ms
+ 7  203.113.156.25 (203.113.156.25)  2.108 ms localhost (27.68.240.54)  26.261 ms localhost (27.68.240.98)  34.011 ms
+ 8  localhost (27.68.229.9)  34.742 ms 13335.hkg.equinix.com (119.27.63.48)  22.938 ms localhost (27.68.229.49)  41.984 ms
+ 9  104.27.161.15 (104.27.161.15)  22.996 ms localhost (27.68.240.250)  23.019 ms 104.27.161.15 (104.27.161.15)  23.441 ms
+\end{lstlisting}
+\item How many hops do you have? There are 9 hops.
+\end{itemize}
+
+\section*{5. Use traceroute tool to find the route from your own computer to usth.edu.vn}
+\begin{itemize} 
+\item \textbf{Command:} traceroute usth.edu.vn
+\item \textbf{Response:}
+\begin{lstlisting}
+traceroute to usth.edu.vn (104.27.160.15), 64 hops max, 52 byte packets
+ 1  192.168.1.1 (192.168.1.1)  2.672 ms  1.566 ms  1.244 ms
+ 2  192.168.100.1 (192.168.100.1)  3.530 ms  1.722 ms  1.545 ms
+ 3  static.vnpt-hanoi.com.vn (203.210.148.65)  3.373 ms  3.251 ms  3.379 ms
+ 4  static.vnpt-hanoi.com.vn (123.25.27.113)  4.477 ms  3.705 ms  3.936 ms
+ 5  static.vnpt.vn (123.29.1.181)  4.414 ms  6.120 ms  3.560 ms
+ 6  * static.vnpt.vn (113.171.5.197)  14.043 ms  21.936 ms
+ 7  static.vnpt.vn (113.171.34.62)  15.315 ms
+    static.vnpt.vn (113.171.32.82)  14.071 ms
+    static.vnpt.vn (113.171.35.150)  41.045 ms
+ 8  static.vnpt.vn (113.171.56.222)  13.871 ms
+    static.vnpt.vn (113.171.56.218)  14.994 ms  14.612 ms
+ 9  snge-b1-link.telia.net (62.115.47.206)  207.699 ms  208.725 ms  209.986 ms
+10  las-b21-link.telia.net (62.115.134.43)  211.222 ms  210.811 ms  199.533 ms
+11  cloudflare-ic-301668-las-bb1.c.telia.net (62.115.32.214)  210.036 ms  204.413 ms  203.992 ms
+12  104.27.160.15 (104.27.160.15)  332.746 ms  228.434 ms  232.087 ms
+\end{lstlisting}
+\item How many hops do you have? There are 12 hops.
+\end{itemize}
+
+\end{document}  
