@@ -1,0 +1,69 @@
+\documentclass[11pt, oneside]{report}   	
+%\usepackage{geometry}                		
+  		
+\usepackage{graphicx}		
+\usepackage{amssymb}
+\usepackage{listings}
+%SetFonts
+
+\title{Report of Network Service\\
+gethostbyname}
+\author{Loc Thi Thuy Linh}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+\section*{1. Write program 02.practical.work.gethostbyname.c in C}
+
+\begin{itemize}
+ \item \textbf{Program:} 
+ \begin{lstlisting}
+#include <stdio.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <string.h>
+#include <arpa/inet.h>
+
+int main(int argc, char *argv[]){
+    char myhostname[100];
+    struct hostent *hstip;
+    char *ip;
+    if(argc > 1){
+        strncpy(myhostname, argv[1], 100);
+    }
+    else{
+        printf("Enter hostname: ");
+        scanf("%s", &myhostname[0]);
+    }
+    
+    hstip = gethostbyname(myhostname);
+    ip = inet_ntoa(*((struct in_addr *)hstip->h_addr_list[0]));
+    
+    printf("The IP address of %s is: %s\n",myhostname, ip);
+
+    return 0;
+}
+\end{lstlisting}
+\end{itemize}
+
+\section*{2. Deploy the program}
+\begin{itemize}
+\item Command: gcc 02.practical.work.gethostbyname.c -o gethostbyname
+\item \textbf{With argument:} \\
+\begin{lstlisting}
+Kagomes-MacBook-Pro-Ad:labwork admin$ ./gethostbyname usth.edu.vn
+The IP address of usth.edu.vn is: 104.27.161.15
+\end{lstlisting}
+
+\item \textbf{Without argument:}
+
+\begin{lstlisting}
+Kagomes-MacBook-Pro-Ad:labwork admin$ ./gethostbyname
+Enter hostname: dantri.com
+The IP address of dantri.com is: 222.255.27.51
+\end{lstlisting}
+
+\end{itemize}
+
+\end{document}  
