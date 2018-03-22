@@ -8,7 +8,7 @@
 int main(){
     int sockfd, clen, clientfd;
     struct sockaddr_in saddr, caddr;
-    unsigned short port = 80;
+    unsigned short port = 8784;
     if((sockfd=socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("Error creating socket\n");
     }
@@ -27,6 +27,9 @@ int main(){
     clen=sizeof(caddr);
     if ((clientfd=accept(sockfd, (struct sockaddr*) &caddr, (socklen_t *)&clen)) < 0) {
         printf("Error accepting connection\n");
+    }
+    else{
+        printf("client connected");
     }
 	return 0;
 }
