@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <string.h>
 
 char* resolve_hostname_IP(struct hostent *h){
