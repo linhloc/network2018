@@ -1,0 +1,49 @@
+\documentclass[11pt, oneside]{report}   	
+%\usepackage{geometry}                		
+  		
+\usepackage{graphicx}		
+\usepackage{amssymb}
+\usepackage{listings}
+%SetFonts
+
+\title{Report of MI2.01 Systems \& Networks\\
+\vskip 2cm
+Centralized Chat System}
+\author{Loc Thi Thuy Linh}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+\section*{1. Problem}
+Implementing a centralized chat system, similar to Internet Relay Chat (IRC). In such a system, client-to-client text messages must first be passed to a centralized server, then the server forwards the messages to the destination client.
+\\
+In detail, the system should work with multiplexed, nonblocking TCP socket.
+\begin{itemize}
+ \item \textbf{Sever side} 
+ 	\begin{itemize}
+	\item Listening on a specific port.
+	\item Receive data and forward data to another clients.
+	\item Server serves each new client with a separated fork().
+	\item Main process and the forked processes use pipe() as communication mechanism.
+	\end{itemize}
+\item \textbf{Client side:} 
+ 	\begin{itemize}
+	\item Takes the server hostname from STDIN or from program arguments.
+	\item Connects to the server.
+	\item Waits for input message from STDIN
+	\item Sends them as messages to server and prints incoming messages (from other clients, forwarded by the server) on the client?s terminal.
+	\item Client should separate a thread for input and a thread for networking
+	\end{itemize}
+\end{itemize}
+
+\section*{2. Deploy the program}
+\begin{itemize}
+\item 
+\item 
+
+\item 
+
+\end{itemize}
+
+\end{document}  
