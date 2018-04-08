@@ -7,9 +7,10 @@
 #include <string.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <pthread.h>
 #define BUFF_LEN 1000
 
-char *severHostname(int argc, char *argv[]){
+char *getSeverHostname(int argc, char *argv[]){
     char *hostname;
     hostname = malloc (sizeof (char) * 100);
     
@@ -56,17 +57,34 @@ int openClientfd(int sockfd, unsigned short port, struct sockaddr_in saddr, stru
     return sockfd;
 }
 
-void nonblockingClient_p1(sockfd){
+int multiplexedClient(int sockfd){
     //reuse address
     setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int));
     //nonblocking
     int fl = fcntl(sockfd, F_GETFL, 0);
     fl |= O_NONBLOCK;
     fcntl(sockfd, F_SETFL, fl);
+    return sockfd;
 }
 
-void dataTranfer(){
-    
+void handleInput(int sockfd){
+    char buff[BUFF_LEN];
+    while(1){
+        memset(&buff, 0, sizeof(buff));
+        printf("Client> ");
+        fgets(buff,BUFF_LEN-1,stdin);
+        send(sockfd, buff, strlen(buff), 0);
+    }
+}
+void handleReceivingMessage(sockfd){
+    char buff[BUFF_LEN];
+    while(1){
+        while (recv(sockfd, buff, sizeof(buff), 0) > 0)
+        {
+            printf("Server> %s\n", buff);
+        }
+        memset(&buff, 0, sizeof(buff));
+    }
 }
 
 
@@ -75,30 +93,21 @@ int main(int argc, char *argv[]){
     struct hostent *h;
     int sockfd;
     char *ip;
-    char buff[1000], buff_send[1000], buff_recv[1000];
     unsigned short port = 8784;
     
-    if((h = gethostbyname(severHostname(argc, argv))) == NULL) printf("Unknown host\n");
+    if((h = gethostbyname(getSeverHostname(argc, argv))) == NULL) printf("Unknown host\n");
     
     //resolves its IP address, print to STDOUT
     ip = resolve_hostname_IP(h);
     printf("The IP address is: %s\n", ip);
     
     sockfd = openClientfd(sockfd, port, saddr, h);
-    nonblockingClient_p1(sockfd);
+    sockfd = multiplexedClient(sockfd);
     
-    while(1) {
-        memset(&buff_send, 0, sizeof(buff_send));
-        printf("Client> ");
-        fgets(buff_send, BUFF_LEN, stdin);
-        if(sizeof(buff_send)>0){
-            send(sockfd, buff_send, sizeof(buff_send), 0);
-        }
-        
-        memset(&buff_recv, 0, sizeof(buff_recv));
-        recv(sockfd, buff_recv, sizeof(buff_recv), 0);
-        printf("Server> %s\n", buff_recv);
-    }
+    //separate thread for input and thread networking
+    pthread_t inputThread;
+    pthread_create(&inputThread, NULL, handleInput, sockfd);
+    handleReceivingMessage(sockfd);
     
     return 0;
 }
