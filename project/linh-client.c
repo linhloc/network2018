@@ -57,7 +57,7 @@ int openClientfd(int sockfd, unsigned short port, struct sockaddr_in saddr, stru
     return sockfd;
 }
 
-int multiplexedClient(int sockfd){
+int nonblockingClient_p1(int sockfd){
     //reuse address
     setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int));
     //nonblocking
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]){
     printf("The IP address is: %s\n", ip);
     
     sockfd = openClientfd(sockfd, port, saddr, h);
-    sockfd = multiplexedClient(sockfd);
+    sockfd = nonblockingClient_p1(sockfd);
     
     //separate thread for input and thread networking
     pthread_t inputThread;
