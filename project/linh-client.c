@@ -69,11 +69,14 @@ int nonblockingClient_p1(int sockfd){
 
 void handleInput(int sockfd){
     char buff[BUFF_LEN];
+    printf("Client> ");
     while(1){
         memset(&buff, 0, sizeof(buff));
-        printf("Client> ");
         fgets(buff,BUFF_LEN-1,stdin);
-        send(sockfd, buff, strlen(buff), 0);
+        if(strlen(buff)>0){
+            send(sockfd, buff, strlen(buff), 0);
+            printf("Client send> %s", buff);
+        }
     }
 }
 void handleReceivingMessage(sockfd){
